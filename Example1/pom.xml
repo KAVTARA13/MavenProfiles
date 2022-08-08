@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>MavenProfiles</artifactId>
+        <groupId>org.example</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>Example1</artifactId>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+    </properties>
+
+    <build>
+        <resources>
+<!--            მივცეთ უფლება წამოიღოს მონაცემები-->
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>App1</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+<!--    შევქმნათ 2 პროფილი dev და prod-->
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <activation>
+<!--                ეს პროფილი დეფაულტად აქტიური იქნებაა
+ან თუ env = dev-->
+                <activeByDefault>true</activeByDefault>
+                <property>
+                    <name>env</name>
+                    <value>dev</value>
+                </property>
+            </activation>
+<!--            დავუნიშნოთ ცვლადების მნიშვნელობები dev სთვის-->
+            <properties>
+                <db.driverClassName>com.mysql.jdbc.Driver</db.driverClassName>
+                <db.url>jdbc:mysql://localhost:3306/dev</db.url>
+                <db.username>mkyong</db.username>
+                <db.password>8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92</db.password>
+            </properties>
+        </profile>
+<!--        შევქმნათ პროფილი prod სთვის რომელიც აქტიური იქნება როდესაც
+env = prod-->
+        <profile>
+            <id>prod</id>
+            <activation>
+                <property>
+                    <name>env</name>
+                    <value>prod</value>
+                </property>
+            </activation>
+            <properties>
+                <db.driverClassName>com.mysql.jdbc.Driver</db.driverClassName>
+                <db.url>jdbc:mysql://live01:3306/prod</db.url>
+                <db.username>mkyong</db.username>
+                <db.password>8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92</db.password>
+            </properties>
+        </profile>
+    </profiles>
+
+</project>
